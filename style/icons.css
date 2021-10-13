@@ -1,0 +1,50 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.icon {
+    content: "";
+    width: 22px;
+    height: 22px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: scroll;
+    background-size: contain;
+}
+
+.icon.brush {
+    background-image: url("../assets/brush.svg");
+}
+
+.icon.drop {
+    background-image: url("../assets/drop.svg");
+}
+
+.icon.dropper {
+    background-image: url("../assets/dropper.svg");
+}
+
+.icon.eraser {
+    background-image: url("../assets/eraser.svg");
+}
+
+.icon.folder {
+    background-image: url("../assets/folder.svg");
+}
+
+.icon.logo {
+    background-image: url("../assets/logo.svg");
+}
+
+.icon.pencil {
+    background-image: url("../assets/pencil.svg");
+}
+
+.icon.settings {
+    background-image: url("../assets/settings.svg");
+}
+
+.icon.window {
+    background-image: url("../assets/window.svg");
+}

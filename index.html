@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" class="allowDraw">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>Brash Art Studio</title>
+
+    <link rel="stylesheet" href="style/icons.css" />
+    <link rel="stylesheet" href="style/main.css" />
+    <link rel="stylesheet" href="style/hsbColor.css" />
+
+</head>
+
+<body class="DRAWABLE">
+
+    <div id="menu" class="webkitDraggable">
+        <span class="icon logo"></span>
+        <hr />
+        <ul id="windowTab">
+            <span class="icon window"></span>
+            <li>Minimize</li>
+            <li>Maximize</li>
+            <li>Close</li>
+        </ul>
+        <ul id="fileTab">
+            <span class="icon folder"></span>
+            <li>New</li>
+            <li>Open</li>
+            <li>Save</li>
+            <li>Save As</li>
+        </ul>
+        <ul id="settingsTab">
+            <span class="icon settings"></span>
+            <li>Preferences</li>
+            <li>Environment</li>
+        </ul>
+        <hr />
+        <ul id="brushTab">
+            <span class="icon brush"></span>
+            <li>Standard Pen</li>
+            <li>Pixel Pen</li>
+            <li>Custom Brush</li>
+        </ul>
+        <ul id="eraserTab">
+            <span class="icon eraser"></span>
+            <li>Square Eraser</li>
+            <li>Round Eraser</li>
+            <li>Custom Eraser</li>
+        </ul>
+    </div>
+
+    <!-- The active scene for the user -->
+    <canvas id="main" class="allowDraw checkerBoard" width="0" height="0"></canvas>
+
+    <canvas id="brushPrint"></canvas>
+
+    <div id="panel">
+        <div id="swatch"></div>
+        <div id="block">
+            <div id="blockSelect" class="select"></div>
+        </div>
+        <div id="hue" class="slider">
+            <div id="hueSelect" class="select"></div>
+        </div>
+        <div id="alpha" class="slider">
+            <div id="alphaSelect" class="select"></div>
+        </div>
+
+
+
+    </div>
+
+</body>
+
+<script src="js/script.js "></script>
+
+</html>
