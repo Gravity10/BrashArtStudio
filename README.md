@@ -10,7 +10,7 @@
 <li>Locally storing a version and allowing users to choose to update to the latest build.</li>
 <li>Allowing users access to different release points through Github branches</li>
 </ul>
-<p>At the moment, I don't have an Electron.js packaged version to distribute, but a live in-browser version can be found here.</p>
+<p>At the moment, I don't have an Electron.js packaged version to distribute, but a live in-browser version can be found <a href="https://https://brash.netlify.app">here</a>.</p>
 
 <h3>How to Help Out</h3>
 <p>As I'm trying to keep this art program as performant as possible, I'm constantly looking for slight improvements to the code. If you have a suggestion, please use the <a href="https://github.com/Gravity10/BrashArtStudio/issues">Issues Tab</a> to let me know!</p>
