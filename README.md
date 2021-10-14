@@ -1,7 +1,7 @@
 <h1>Brash Art Studio</h1>
 
 <p><strong>Relevant Links</strong> | <a href="https://brash.netlify.app" target="_blank">Live Site Version</a> | <a href="https://www.electronjs.org/docs/latest/tutorial/quick-start" target="_blank">Electron.js Quick Start</a> | <a href="https://nodejs.org/en/">Node.js</a></p>
-<p><strong>Github Places</strong> | <a href="https://github.com/Gravity10/BrashArtStudio/issues" target="_blank">Request Features/Bug Fixes</a> | <a href="https://github.com/Gravity10/BrashArtStudio/projects/1" target="_blank">Brash Project Page</a></p>
+<p><strong>Github Places</strong> | <a href="https://github.com/OttCS/BrashArtStudio/issues" target="_blank">Request Features/Bug Fixes</a> | <a href="https://github.com/OttCS/BrashArtStudio/projects/1" target="_blank">Brash Project Page</a></p>
 
 <h2>Origins</h2>
 <p>Brash Art Studio was made to allow easy access to a constantly updating, blazing fast art program. Initially started after my go-to program tried to open a 400 megapixel canvas with the CPU (and froze my laptop for a half-hour), I set out to build an art program that has the features that I actually need and none I don't. By doing this, I could not only have a faster program but a more streamlined and accessible interface. Started in mid-2021, regular updates have brought Brash into a somewhat usable state.</p>
