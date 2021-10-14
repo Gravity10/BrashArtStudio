@@ -1,0 +1,58 @@
+/* 
+    Styles specific to the window menu can be found here.
+*/
+
+#menu {
+    -webkit-app-region: drag;
+    z-index: 999;
+    position: absolute;
+    left: 0px;
+    width: 38px;
+    line-height: 38px;
+    height: 100vh;
+    background: #222;
+    text-align: center;
+}
+
+#menu * {
+    display: block;
+    height: 38px;
+    text-align: center;
+}
+
+#menu .icon {
+    margin: 0px 8px;
+}
+
+#menu hr {
+    width: 70%;
+    border: 1px solid #666;
+    height: 0px;
+    margin: 8px auto;
+}
+
+#menu ul {
+    -webkit-app-region: no-drag;
+    width: 100%;
+    overflow: hidden;
+    opacity: 0.3;
+}
+
+#menu ul * {
+    display: inline;
+    float: left;
+    text-align: center;
+    line-height: 38px;
+    height: 100%;
+    background-color: #222;
+}
+
+#menu ul li {
+    cursor: pointer;
+    font-size: 14px;
+    width: 112px;
+}
+
+#menu ul li:hover {
+    background-color: #111;
+}

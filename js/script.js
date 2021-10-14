@@ -1,27 +1,19 @@
-// Prevent Default things
+/*
+    Looking at this code is terrible, I am well aware of that.
+*/
 
-// Fixed with user-select and -webkit-user-selection
-// window.addEventListener("selectstart", function (event) {
-//     event.preventDefault();
-// });
-
-document.oncontextmenu = function (e) {
-    e.preventDefault();
-}
-
-// Make this thing function in electron and normal browsers
+// Make this thing function in Electron as well as normal browsers
 
 var inElectron = false;
-
 if (navigator.userAgent.toLowerCase().indexOf(' electron/') > -1) {
     inElectron = true;
     const { ipcRenderer } = require('electron');
     var ipc = ipcRenderer;
 } else {
-
+    // Nothing really browser-exclusive, but this is still here for the option
 }
 
-// Catch and pass electron stuff
+// Catch and pass Electron stuff
 
 // Send message to main.js
 
@@ -55,24 +47,26 @@ const bCtx = b.getContext('2d', {
 
 const menuOptions = document.getElementById("menu").getElementsByTagName("ul");
 
-for (var i = 0; i < menuOptions.length; i++) {
-    // If not in electron, visually remove the windowTab option
-    if (menuOptions[i].id == "windowTab" && !inElectron) {
-        menuOptions[i].style.position = "absolute";
-        menuOptions[i].style.display = "none";
-    } else {
-        menuOptions[i].addEventListener("mouseover", function () { menuHandler(this, true) });
-        menuOptions[i].addEventListener("mouseout", function () { menuHandler(this, false) });
-        for (var j = 0; j < menuOptions[i].getElementsByTagName("li").length; j++) {
-            menuOptions[i].getElementsByTagName("li")[j].addEventListener(
-                "click",
-                function () {
-                    menuButtonHandler(
-                        this.parentElement.id.replace("Tab", ""),
-                        this.innerText.toLowerCase().replace(" ", "")
-                    )
-                }
-            );
+document.body.onload = function () {
+    for (var i = 0; i < menuOptions.length; i++) {
+        // If not in electron, visually remove the windowTab option
+        if (menuOptions[i].id == "windowTab" && !inElectron) {
+            menuOptions[i].style.position = "absolute";
+            menuOptions[i].style.display = "none";
+        } else {
+            menuOptions[i].addEventListener("mouseover", function () { menuHandler(this, true) });
+            menuOptions[i].addEventListener("mouseout", function () { menuHandler(this, false) });
+            for (var j = 0; j < menuOptions[i].getElementsByTagName("li").length; j++) {
+                menuOptions[i].getElementsByTagName("li")[j].addEventListener(
+                    "click",
+                    function () {
+                        menuButtonHandler(
+                            this.parentElement.id.replace("Tab", ""),
+                            this.innerText.toLowerCase().replace(" ", "")
+                        )
+                    }
+                );
+            }
         }
     }
 }
@@ -81,7 +75,7 @@ for (var i = 0; i < menuOptions.length; i++) {
 
 function menuHandler(x, focus) {
     if (focus && !input['mouse']) {
-        x.style.width = "100vw";
+        x.style.maxidth = "100vw";
         x.style.opacity = "1.0";
     } else {
         x.style.opacity = "0.3";
@@ -153,12 +147,11 @@ function menuButtonHandler(category, x) {
     }
 }
 
-// More declarations, mainly palette stuff
+// More declarations, big main element stuff
 
 const swatch = document.getElementById("swatch");
 const block = document.getElementById("block");
 const blockSelect = document.getElementById("blockSelect");
-// const hue = document.getElementById("hue");
 const hueSelect = document.getElementById("hueSelect");
 
 // Declaring widely used variables
@@ -213,50 +206,6 @@ input['shift'] = false;
 input['control'] = false;
 input['alt'] = false;
 input[' '] = false;
-
-// Useful helper methods to avoid code duplication
-
-// Clamp method from glsl
-
-function clamp(x, min, max) {
-    return Math.min(Math.max(x, min), max);
-}
-
-// mix method from glsl
-
-function mix(a, b, c) {
-    return (1 - c) * a + c * b;
-}
-
-// Convert HSB array into an RGB array
-
-function hsbToRgb(arr) {
-    return [
-        mix(255, clamp(510 - Math.min(arr[0], Math.abs(360 - arr[0])) * 255 / 60, 0, 255), arr[1] * 0.01) * arr[2] * 0.01,
-        mix(255, clamp(510 - Math.abs(arr[0] - 120) * 255 / 60, 0, 255), arr[1] * 0.01) * arr[2] * 0.01,
-        mix(255, clamp(510 - Math.abs(arr[0] - 240) * 255 / 60, 0, 255), arr[1] * 0.01) * arr[2] * 0.01
-    ];
-}
-
-// Convert RGB array to  HSB array
-
-function rgbToHsb(rgb) {
-    let a, max, hue;
-    max = a = Math.max(rgb[0], rgb[1], rgb[2]);
-    a -= Math.min(rgb[0], rgb[1], rgb[2]);
-
-    if (a == 0) {
-        return [0, 0, max / 2.55];
-    } else if (rgb[0] == max) {
-        hue = (rgb[1] - rgb[2]) * a;
-    } else if (rgb[1] == max) {
-        hue = 2.0 + (rgb[2] - rgb[0]) * a;
-    } else {
-        hue = 4.0 + (rgb[0] - rgb[1]) * a;
-    }
-
-    return [(hue * 60 + 360) % 360, a / max * 100, max / 2.55];
-}
 
 function cursor(x) {
     html.style.cursor = x;
@@ -374,7 +323,23 @@ function establishBrush() {
 
 }
 
-// EVENT HANDLING
+/*
+    THE SECTION BELOW IS RESERVED FOR DOCUMENT EVENTS
+    NO PARTICULAR REASON OTHER THAT IT IS EASIER TO
+    FIND THINGS WHEN THEY ARE ORGANIZED SO HERE IS
+    WHERE THEY ARE GOING
+*/
+
+// Fixed with user-select and -webkit-user-selection in main.css
+// window.addEventListener("selectstart", function (event) {
+//     event.preventDefault();
+// });
+
+// Prevent right-click menu from showing up
+
+document.oncontextmenu = function (e) {
+    e.preventDefault();
+}
 
 // Scroll Wheel
 

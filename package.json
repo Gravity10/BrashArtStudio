@@ -1,0 +1,13 @@
+{
+  "name": "brash-art-studio",
+  "version": "beta-released",
+  "description": "HTML based art application with GPU acceleration",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Gravity10",
+  "devDependencies": {
+    "electron": "^13.2.2"
+  }
+}

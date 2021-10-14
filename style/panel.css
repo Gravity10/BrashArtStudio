@@ -1,0 +1,31 @@
+/* 
+    Styles specific to the panel can be found here.
+*/
+
+#panel {
+    z-index: 998;
+    position: absolute;
+    top: 0px;
+    left: 38px;
+    width: 255px;
+    height: 100vh;
+    line-height: 22px;
+    border: 8px solid #333;
+    border-bottom: none;
+    background: #333;
+    text-align: center;
+}
+
+#panel * {
+    margin-bottom: 8px;
+}
+
+#panel .panelSlide {
+    width: 100%;
+    height: auto;
+    display: none;
+}
+
+#panel .panelSlide.active {
+    display: block;
+}

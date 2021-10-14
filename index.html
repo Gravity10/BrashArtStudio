@@ -8,11 +8,18 @@
 
     <link rel="stylesheet" href="style/icons.css" />
     <link rel="stylesheet" href="style/main.css" />
+    <link rel="stylesheet" href="style/menu.css" />
+    <link rel="stylesheet" href="style/panel.css" />
     <link rel="stylesheet" href="style/hsbColor.css" />
 
 </head>
 
 <body class="DRAWABLE">
+
+    <!-- 
+        Format for the menu is VERY specific, so that Javascript can just build
+        it on page load.
+     -->
 
     <div id="menu" class="webkitDraggable">
         <span class="icon logo"></span>
@@ -56,23 +63,23 @@
     <canvas id="brushPrint"></canvas>
 
     <div id="panel">
-        <div id="swatch"></div>
-        <div id="block">
-            <div id="blockSelect" class="select"></div>
+        <div id="panelBuild1">
+            <div id="swatch"></div>
+            <div id="block">
+                <div id="blockSelect" class="select"></div>
+            </div>
+            <div id="hue" class="slider">
+                <div id="hueSelect" class="select"></div>
+            </div>
+            <div id="alpha" class="slider">
+                <div id="alphaSelect" class="select"></div>
+            </div>
         </div>
-        <div id="hue" class="slider">
-            <div id="hueSelect" class="select"></div>
-        </div>
-        <div id="alpha" class="slider">
-            <div id="alphaSelect" class="select"></div>
-        </div>
-
-
-
     </div>
 
 </body>
 
+<script src="js/helperMethods.js "></script>
 <script src="js/script.js "></script>
 
 </html>

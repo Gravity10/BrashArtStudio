@@ -33,6 +33,10 @@
     background-image: url("../assets/folder.svg");
 }
 
+.icon.help {
+    background-image: url("../assets/help.svg");
+}
+
 .icon.logo {
     background-image: url("../assets/logo.svg");
 }
