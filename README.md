@@ -13,4 +13,7 @@
 <p>As I'm trying to keep this art program as performant as possible, I'm constantly looking for slight improvements to the code. If you have a suggestion, please use the Github Issues Tab to let me know! I'm also trying to implement WebGL and GPU acceleration for this project, so if you can contribute towards that, any help would be greatly appreciated.</p>
 
 <h2>How To Get It</h2>
-<p>At the moment, I don't have an Electron.js packaged version to distribute, but a live in-browser version can be found <a href="https://https://brash.netlify.app">here</a>. You can also download this repo and follow the Electron.js Quick Start guide (link above) to set up the application.</p>
+<p>At the moment, I don't have an Electron.js packaged version to distribute, but a live in-browser version can be found <a href="https://https://brash.netlify.app">here</a>. Going off of the Electron.js Quick Start Guide, you should be able to download and unzip this repo, and then run <b><i>npm install --save-dev electron</i></b> from within that directory. All that I ask is that you report any issues (and code fixes if you have them) to the Github Issues Tab (linked above), so that those issues can be solved for everyone.
+<br />
+<br />
+<p>Thanks for the support <3</p>
