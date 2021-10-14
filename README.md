@@ -1,6 +1,6 @@
 <h1>Brash Art Studio</h1>
 
-<p><strong>Relevant Links</strong> | <a href="https://brash.netlify.app" target="_blank">Live Site Version</a> | <a href="https://www.electronjs.org/" target="_blank">Electron.js Quick Start</a> | <a href="https://nodejs.org/en/">Node.js</a></p>
+<p><strong>Relevant Links</strong> | <a href="https://brash.netlify.app" target="_blank">Live Site Version</a> | <a href="https://www.electronjs.org/docs/latest/tutorial/quick-start" target="_blank">Electron.js Quick Start</a> | <a href="https://nodejs.org/en/">Node.js</a></p>
 <p><strong>Github Places</strong> | <a href="https://github.com/Gravity10/BrashArtStudio/issues" target="_blank">Request Features/Bug Fixes</a> | <a href="https://github.com/Gravity10/BrashArtStudio/projects/1" target="_blank">Brash Project Page</a></p>
 
 <h2>Origins</h2>
