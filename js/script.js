@@ -47,26 +47,24 @@ const bCtx = b.getContext('2d', {
 
 const menuOptions = document.getElementById("menu").getElementsByTagName("ul");
 
-document.body.onload = function () {
-    for (var i = 0; i < menuOptions.length; i++) {
-        // If not in electron, visually remove the windowTab option
-        if (menuOptions[i].id == "windowTab" && !inElectron) {
-            menuOptions[i].style.position = "absolute";
-            menuOptions[i].style.display = "none";
-        } else {
-            menuOptions[i].addEventListener("mouseover", function () { menuHandler(this, true) });
-            menuOptions[i].addEventListener("mouseout", function () { menuHandler(this, false) });
-            for (var j = 0; j < menuOptions[i].getElementsByTagName("li").length; j++) {
-                menuOptions[i].getElementsByTagName("li")[j].addEventListener(
-                    "click",
-                    function () {
-                        menuButtonHandler(
-                            this.parentElement.id.replace("Tab", ""),
-                            this.innerText.toLowerCase().replace(" ", "")
-                        )
-                    }
-                );
-            }
+for (var i = 0; i < menuOptions.length; i++) {
+    // If not in electron, visually remove the windowTab option
+    if (menuOptions[i].id == "windowTab" && !inElectron) {
+        menuOptions[i].style.position = "absolute";
+        menuOptions[i].style.display = "none";
+    } else {
+        menuOptions[i].addEventListener("mouseover", function () { menuHandler(this, true) });
+        menuOptions[i].addEventListener("mouseout", function () { menuHandler(this, false) });
+        for (var j = 0; j < menuOptions[i].getElementsByTagName("li").length; j++) {
+            menuOptions[i].getElementsByTagName("li")[j].addEventListener(
+                "click",
+                function () {
+                    menuButtonHandler(
+                        this.parentElement.id.replace("Tab", ""),
+                        this.innerText.toLowerCase().replace(" ", "")
+                    )
+                }
+            );
         }
     }
 }
@@ -75,7 +73,7 @@ document.body.onload = function () {
 
 function menuHandler(x, focus) {
     if (focus && !input['mouse']) {
-        x.style.maxidth = "100vw";
+        x.style.width = "100vw";
         x.style.opacity = "1.0";
     } else {
         x.style.opacity = "0.3";
