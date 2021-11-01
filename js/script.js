@@ -137,6 +137,7 @@ function menuButtonHandler(parentId, x) {
     } else {
         alert("Sorry, " + x + " hasn't been implemented yet");
     }
+    // Close parent menuTab
     menuHandler(document.getElementById(parentId, false));
 }
 
