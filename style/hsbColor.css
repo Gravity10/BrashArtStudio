@@ -28,12 +28,29 @@
     mix-blend-mode: difference;
 }
 
-#hue {
+.slider {
     position: relative;
     content: "";
     width: 100%;
     height: 22px;
     overflow: hidden;
+    background: #FFF;
+}
+
+.slider .select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translateX(-50%);
+    max-width: 6px;
+    width: 6px;
+    min-width: 6px;
+    height: calc(100% - 2px);
+    border: 1px solid #FFF;
+    mix-blend-mode: difference;
+}
+
+#hue {
     background-image: linear-gradient(to right, 
     hsl(0, 100%, 50%),
     hsl(15, 100%, 50%),
@@ -61,19 +78,6 @@
     hsl(345, 100%, 50%),
     hsl(360, 100%, 50%)
     );
-}
-
-.slider .select {
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translateX(-50%);
-    max-width: 6px;
-    width: 6px;
-    min-width: 6px;
-    height: calc(100% - 2px);
-    border: 1px solid #FFF;
-    mix-blend-mode: difference;
 }
 
 #alpha {

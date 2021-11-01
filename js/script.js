@@ -3,7 +3,6 @@
 */
 
 // Make this thing function in Electron as well as normal browsers
-
 var inElectron = false;
 if (navigator.userAgent.toLowerCase().indexOf(' electron/') > -1) {
     inElectron = true;
@@ -16,7 +15,6 @@ if (navigator.userAgent.toLowerCase().indexOf(' electron/') > -1) {
 // Catch and pass Electron stuff
 
 // Send message to main.js
-
 function ipcSend(msg) {
     if (inElectron) {
         ipc.send(msg);
@@ -26,11 +24,9 @@ function ipcSend(msg) {
 }
 
 // Declarations
-
 const html = document.getElementsByTagName('html')[0];
 
 // Canvas declarations
-
 const c = document.getElementById('main');
 const ctx = c.getContext('2d', {
     antialias: false,
@@ -44,7 +40,6 @@ const bCtx = b.getContext('2d', {
 });
 
 // Automatically give every menu ul a fixed mouseOver solution, idk man it was easy
-
 const menuOptions = document.getElementById("menu").getElementsByTagName("ul");
 
 for (var i = 0; i < menuOptions.length; i++) {
@@ -60,7 +55,7 @@ for (var i = 0; i < menuOptions.length; i++) {
                 "click",
                 function () {
                     menuButtonHandler(
-                        this.parentElement.id.replace("Tab", ""),
+                        this.parentElement.id,
                         this.innerText.toLowerCase().replace(" ", "")
                     )
                 }
@@ -70,7 +65,6 @@ for (var i = 0; i < menuOptions.length; i++) {
 }
 
 // Handle mouseover/blurs and adjust width of ul option
-
 function menuHandler(x, focus) {
     if (focus && !input['mouse']) {
         x.style.width = "100vw";
@@ -82,8 +76,8 @@ function menuHandler(x, focus) {
 }
 
 // Handle ul button clicks based on text
-
-function menuButtonHandler(category, x) {
+function menuButtonHandler(parentId, x) {
+    let category = parentId.replace("Tab", "");
     if (category == "window") {
         if (x == "minimize") {
             ipcSend("min");
@@ -143,24 +137,22 @@ function menuButtonHandler(category, x) {
     } else {
         alert("Sorry, " + x + " hasn't been implemented yet");
     }
+    menuHandler(document.getElementById(parentId, false));
 }
 
 // More declarations, big main element stuff
-
 const swatch = document.getElementById("swatch");
 const block = document.getElementById("block");
 const blockSelect = document.getElementById("blockSelect");
 const hueSelect = document.getElementById("hueSelect");
 
 // Declaring widely used variables
-
 var prefs = { scrollDirection: -1 };
 var state = { cX: 0, cY: 0, cW: 0, cH: 0, cZ: 1.0, curTarget: "" };
 var brush = { round: false, eraser: false, size: 1, h: 0, s: 0, b: 0, a: 255 };
 var prev = { x: 0, y: 0 };
 
 // Input collection is really nifty and works nice
-
 var input = {};
 input['mouse'] = false;
 input['rightClick'] = false;
@@ -210,7 +202,6 @@ function cursor(x) {
 }
 
 // "Setters" for major elements
-
 function setCanvasPos() {
     c.style.width = (state.cW * state.cZ) + "px";
     c.style.height = (state.cH * state.cZ) + "px";
@@ -238,7 +229,6 @@ function setHueSelectPos() {
 }
 
 // "Targeting" for adjusting values to align with actual element positions, then running Setters
-
 function targetBlock(x, y) {
     brush.s = clamp(x - 46, 0, 255) / 2.55;
     brush.b = (255 - clamp(y - 38, 0, 255)) / 2.55;
@@ -256,7 +246,6 @@ function targetHue(x) {
 // CANVAS FUNCTIONS
 
 // Custom line algorithm, basically using mix() to take a bunch of "mixed" values from the two coordinates to make a line
-
 function line(x1, y1, x2, y2) {
     for (var i = 0; i < 1; i += Math.floor(1 + brush.size * 0.125) / (Math.abs(x2 - x1) + Math.abs(y2 - y1))) {
         drawPx(mix(x1, x2, i), mix(y1, y2, i));
@@ -264,13 +253,11 @@ function line(x1, y1, x2, y2) {
 }
 
 // DrawPx() just copies the pre-rendered brush print, centered at the provided x,y
-
 function drawPx(x, y) {
     ctx.drawImage(b, Math.round(x - 0.5 * brush.size), Math.round(y - 0.5 * brush.size));
 }
 
 // Dropper gets the HSB value of the x,y pixel, then sets all the proper things
-
 function dropper(x, y) {
     let data = ctx.getImageData(x, y, 1, 1).data;
     let hsb = rgbToHsb(data);
@@ -284,7 +271,6 @@ function dropper(x, y) {
 }
 
 // Resets all state values to defaults and passed parameters and clears/centers canvas
-
 function freshCanvas(w, h) {
     state = { cX: (window.innerWidth - w) * 0.5, cY: (window.innerHeight - h) * 0.5, cW: w, cH: h, cZ: 1.0, curTarget: "" };
     c.height = state.cH;
@@ -293,7 +279,6 @@ function freshCanvas(w, h) {
 }
 
 // Pre-renders brush print for copying to canvas when drawing
-
 function establishBrush() {
     let rgb = hsbToRgb([brush.h, brush.s, brush.b]);
     b.width = b.height = brush.size;
@@ -334,13 +319,11 @@ function establishBrush() {
 // });
 
 // Prevent right-click menu from showing up
-
 document.oncontextmenu = function (e) {
     e.preventDefault();
 }
 
 // Scroll Wheel
-
 document.onwheel = function (e) {
     let target = {
         x: (e.x - state.cX) / state.cZ,
@@ -359,7 +342,6 @@ document.onwheel = function (e) {
 }
 
 // Mouse down
-
 document.onmousedown = function (e) {
     if (e.button == 2) {
         input['rightClick'] = true;
@@ -391,7 +373,6 @@ document.onmousedown = function (e) {
 }
 
 // Mouse move
-
 document.onmousemove = function (e) {
     if (!input['mouse']) {
         let tempStr = "default";
@@ -428,7 +409,6 @@ document.onmousemove = function (e) {
 }
 
 // Mouse down
-
 document.onmouseup = function (e) {
     if (e.button == 2) {
         input['rightClick'] = false;
@@ -439,7 +419,6 @@ document.onmouseup = function (e) {
 }
 
 // Key down
-
 document.onkeydown = function (e) {
     input[e.key.toLowerCase()] = true;
     if (e.key.toLowerCase() == "s") {
@@ -448,7 +427,6 @@ document.onkeydown = function (e) {
 }
 
 // Key press
-
 document.onkeypress = function (e) {
     input[e.key.toLowerCase()] = true;
     if (input['shift']) {
@@ -473,7 +451,6 @@ document.onkeypress = function (e) {
 }
 
 // Key up
-
 document.onkeyup = function (e) {
     input[e.key.toLowerCase()] = false;
     if (e.key = " ") {
