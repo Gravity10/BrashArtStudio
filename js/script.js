@@ -148,7 +148,7 @@ const blockSelect = document.getElementById("blockSelect");
 const hueSelect = document.getElementById("hueSelect");
 
 // Declaring widely used variables
-var prefs = { scrollDirection: -1 };
+var prefs = { scrollDirection: -1, aa: false };
 var state = { cX: 0, cY: 0, cW: 0, cH: 0, cZ: 1.0, curTarget: "" };
 var brush = { round: false, eraser: false, size: 1, h: 0, s: 0, b: 0, a: 255 };
 var prev = { x: 0, y: 0 };
@@ -248,8 +248,10 @@ function targetHue(x) {
 
 // Custom line algorithm, basically using mix() to take a bunch of "mixed" values from the two coordinates to make a line
 function line(x1, y1, x2, y2) {
-    for (var i = 0; i < 1; i += Math.floor(1 + brush.size * 0.125) / (Math.abs(x2 - x1) + Math.abs(y2 - y1))) {
+    let inc = 1 / (Math.abs(x2 - x1) + Math.abs(y2 - y1) + 1);
+    for (var i = 0; i <= 1.0; i += inc) {
         drawPx(mix(x1, x2, i), mix(y1, y2, i));
+        drawPx(mix(x2, x1, i), mix(y2, y1, i));
     }
 }
 
@@ -458,3 +460,5 @@ document.onkeyup = function (e) {
         cursor("default");
     }
 }
+
+freshCanvas(256, 256)
