@@ -83,7 +83,17 @@ function menuHandler(x, focus) {
 // Handle ul button clicks based on text
 function menuButtonHandler(parentId, x) {
     let category = parentId.replace("Tab", "");
-    if (category == "window") {
+    if (category == "help") {
+        if (x == "welcome") {
+            alert("Welcome to Brash Art Studio!")
+        } else if (x == "about") {
+            window.open("https://ottcs.netlify.app/brash.html");
+        } else if (x == "ottcs") {
+            window.open("https://ottcs.netlify.app/");
+        } else {
+            alert("Sorry, " + x + " hasn't been implemented yet");
+        }
+    } else if (category == "window") {
         if (x == "minimize") {
             ipcSend("min");
         } else if (x == "maximize") {
