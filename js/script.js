@@ -26,6 +26,11 @@ function ipcSend(msg) {
 // Declarations
 const html = document.getElementsByTagName('html')[0];
 
+const paletteOffset = {
+    x: document.getElementById("block").getBoundingClientRect().left,
+    y: document.getElementById("block").getBoundingClientRect().top
+};
+
 // Canvas declarations
 const c = document.getElementById('main');
 const ctx = c.getContext('2d', {
@@ -213,7 +218,7 @@ function setCanvasPos() {
 
 function setSwatch() {
     let rgb = hsbToRgb([brush.h, brush.s, brush.b]);
-    swatch.style.backgroundColor = "rgba(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + "," + (brush.a / 255) + ")";
+    swatch.style.backgroundColor = "rgba(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + "," + brush.a + ")";
 }
 
 function setBlockColor() {
@@ -225,21 +230,28 @@ function setBlockSelectPos() {
     blockSelect.style.top = 255 - (brush.b * 2.55) + "px";
 }
 
-function setHueSelectPos() {
-    hueSelect.style.left = clamp(brush.h / 360 * 255, 0, 255) + "px";
+function setSelectPos(id, val) {
+    document.getElementById(id + "Select").style.left = val + "px";
 }
 
 // "Targeting" for adjusting values to align with actual element positions, then running Setters
 function targetBlock(x, y) {
-    brush.s = clamp(x - 46, 0, 255) / 2.55;
-    brush.b = (255 - clamp(y - 38, 0, 255)) / 2.55;
+    brush.s = clamp(x - paletteOffset.x, 0, 255) / 2.55;
+    brush.b = (255 - clamp(y - paletteOffset.y, 0, 255)) / 2.55;
     setBlockSelectPos();
     setSwatch();
 }
 
-function targetHue(x) {
-    brush.h = clamp(x - 46, 0, 255) / 255 * 360 % 360;
-    setHueSelectPos();
+function targetSlider(x) {
+    let a = clamp(x - paletteOffset.x, 0, 255);
+    if (state.curTarget === "hue") {
+        brush.h = a / 255 * 360 % 360;
+    } else if (state.curTarget === "alpha") {
+        brush.a = clamp((255 - a) / 255, 0, 1);
+    } else if (state.curTarget === "size") {
+        brush.size = Math.max(1, a);
+    }
+    setSelectPos(state.curTarget, a);
     setBlockColor();
     setSwatch();
 }
@@ -248,10 +260,9 @@ function targetHue(x) {
 
 // Custom line algorithm, basically using mix() to take a bunch of "mixed" values from the two coordinates to make a line
 function line(x1, y1, x2, y2) {
-    let inc = 1 / (Math.abs(x2 - x1) + Math.abs(y2 - y1) + 1);
+    let inc = 0.5 / (Math.abs(x2 - x1) + Math.abs(y2 - y1) + 1);
     for (var i = 0; i <= 1.0; i += inc) {
         drawPx(mix(x1, x2, i), mix(y1, y2, i));
-        drawPx(mix(x2, x1, i), mix(y2, y1, i));
     }
 }
 
@@ -267,7 +278,7 @@ function dropper(x, y) {
     brush.h = hsb[0];
     brush.s = hsb[1];
     brush.b = hsb[2];
-    setHueSelectPos();
+    setSelectPos("hue", clamp(brush.h / 360 * 255, 0, 255));
     setBlockColor();
     setBlockSelectPos();
     setSwatch();
@@ -285,15 +296,15 @@ function freshCanvas(w, h) {
 function establishBrush() {
     let rgb = hsbToRgb([brush.h, brush.s, brush.b]);
     b.width = b.height = brush.size;
-    bCtx.globalAlpha = brush.a;
-    bCtx.fillStyle = "rgba(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + "," + (brush.a / 255) + ")";
+    ctx.globalAlpha = brush.a;
+    bCtx.fillStyle = "rgb(" + rgb[0] + "," + rgb[1] + "," + rgb[2] + ")";
 
     if (brush.eraser) {
         ctx.globalCompositeOperation = "destination-out";
     } else {
         ctx.globalCompositeOperation = "source-over";
     }
-
+    bCtx.clearRect(0, 0, b.width, b.height);
     if (!brush.round) {
         // Pixel brush
         bCtx.fillRect(0, 0, brush.size, brush.size);
@@ -306,7 +317,21 @@ function establishBrush() {
         bCtx.closePath();
         brush.size *= 2;
     }
+}
 
+function promptCurrent() {
+    if (state.curTarget == "hue") {
+        brush.h = clamp(parseInt(prompt("Hue (0-360)"), 10), 0, 360);
+        setSelectPos("hue", clamp(brush.h / 360 * 255, 0, 255));
+    } else if (state.curTarget == "size") {
+        brush.size = clamp(parseInt(prompt("Brush Size (1-255)"), 10), 1, 255);
+        setSelectPos("size", brush.size);
+    } else if (state.curTarget == "alpha") {
+        brush.a = clamp(parseInt(prompt("Brush Opacity (0-255)"), 10), 0, 255) / 255.0;
+        setSelectPos("alpha", (1.0 - brush.a) * 255.0);
+    }
+    setBlockColor();
+    setSwatch();
 }
 
 /*
@@ -352,7 +377,8 @@ document.onmousedown = function (e) {
         input['mouse'] = true;
     }
 
-    if (e.target.classList.contains('allowDraw')) {
+    let el = e.target;
+    if (el.classList.contains('allowDraw')) {
         state.curTarget = "scene";
         if (input['rightClick']) {
             // Right click on drawable region = dropper
@@ -364,29 +390,26 @@ document.onmousedown = function (e) {
             establishBrush();
             drawPx((e.x - state.cX) / state.cZ, (e.y - state.cY) / state.cZ);
         }
-    } else if (e.target.id == "block" || e.target.id == "blockSelect") {
+    } else if (el.id == "block" || el.id == "blockSelect") {
         state.curTarget = "block";
         targetBlock(e.x, e.y);
-    } else if (e.target.id == "hue" || e.target.id == "hueSelect") {
-        state.curTarget = "hue";
-        targetHue(e.x);
+    } else if (el.classList.contains("slider") || el.classList.contains("select")) {
+        state.curTarget = el.id.replace("Select", "");
+        if (input['rightClick']) {
+            deselect();
+            promptCurrent();
+        } else {
+            targetSlider(e.x);
+        }
     } else {
-        state.curTarget = e.target.id;
+        state.curTarget = el.id;
     }
 }
 
 // Mouse move
 document.onmousemove = function (e) {
     if (!input['mouse']) {
-        let tempStr = "default";
-        if (e.target.classList.contains('allowDraw')) {
-            if (input[" "]) {
-                tempStr = "move"
-            } else {
-                tempStr = "crosshair";
-            }
-        }
-        cursor(tempStr);
+
     } else if (state.curTarget == "scene") {
 
         if (input['shift'] || input['alt'] || input['control'] || input[' ']) {
@@ -402,10 +425,13 @@ document.onmousemove = function (e) {
             line((prev.x - state.cX) / state.cZ, (prev.y - state.cY) / state.cZ, (e.x - state.cX) / state.cZ, (e.y - state.cY) / state.cZ);
         }
 
-    } else if (state.curTarget == "block") {
-        targetBlock(e.x, e.y);
-    } else if (state.curTarget == "hue") {
-        targetHue(e.x);
+    } else {
+        let el = state.curTarget;
+        if (el == "block") {
+            targetBlock(e.x, e.y);
+        } else if (el == "hue" || el == "alpha" || el == "size") {
+            targetSlider(e.x);
+        }
     }
     prev.x = e.x;
     prev.y = e.y;
@@ -419,6 +445,12 @@ document.onmouseup = function (e) {
         input['mouse'] = false;
         state.onCanvas = false;
     }
+}
+
+function deselect() {
+    input['rightClick'] = false;
+    input['mouse'] = false;
+    state.onCanvas = false;
 }
 
 // Key down

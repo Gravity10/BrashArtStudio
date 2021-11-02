@@ -20,6 +20,11 @@
     margin-bottom: 8px;
 }
 
+#panel p {
+    text-align: center;
+    margin: 8px 0;
+}
+
 #panel .panelSlide {
     width: 100%;
     height: auto;
