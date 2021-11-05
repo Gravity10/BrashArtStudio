@@ -90,6 +90,8 @@ function menuButtonHandler(parentId, x) {
             window.open("https://ottcs.netlify.app/brash.html");
         } else if (x == "ottcs") {
             window.open("https://ottcs.netlify.app/");
+        } else if (x == "workflow") {
+            alert("General workflow information:\nThe slider inputs in the panel can be right-clicked to manually input values\nIcons on the left bar can be hovered over to show different options and tools");
         } else {
             alert("Sorry, " + x + " hasn't been implemented yet");
         }
@@ -165,7 +167,7 @@ const hueSelect = document.getElementById("hueSelect");
 // Declaring widely used variables
 var prefs = { scrollDirection: -1, aa: false };
 var state = { cX: 0, cY: 0, cW: 0, cH: 0, cZ: 1.0, curTarget: "" };
-var brush = { round: false, eraser: false, size: 1, h: 0, s: 0, b: 0, a: 255 };
+var brush = { round: false, eraser: false, size: 1, h: 0.0, s: 0.0, b: 0.0, a: 1.0 };
 var prev = { x: 0, y: 0 };
 
 // Input collection is really nifty and works nice
@@ -331,14 +333,23 @@ function establishBrush() {
 
 function promptCurrent() {
     if (state.curTarget == "hue") {
-        brush.h = clamp(parseInt(prompt("Hue (0-360)"), 10), 0, 360);
-        setSelectPos("hue", clamp(brush.h / 360 * 255, 0, 255));
+        let h = clamp(parseInt(prompt("Hue (0-360)"), 10), 0, 360);
+        if (typeof h === 'number') {
+            brush.h = h;
+            setSelectPos("hue", clamp(brush.h / 360 * 255, 0, 255));
+        }
     } else if (state.curTarget == "size") {
-        brush.size = clamp(parseInt(prompt("Brush Size (1-255)"), 10), 1, 255);
-        setSelectPos("size", brush.size);
+        let s = clamp(parseInt(prompt("Brush Size (1-255)"), 10), 1, 255);
+        if (typeof s === 'number') {
+            brush.s = s;
+            setSelectPos("size", brush.size);
+        }
     } else if (state.curTarget == "alpha") {
-        brush.a = clamp(parseInt(prompt("Brush Opacity (0-255)"), 10), 0, 255) / 255.0;
-        setSelectPos("alpha", (1.0 - brush.a) * 255.0);
+        let a = clamp(parseInt(prompt("Brush Opacity (0-255)"), 10) / 255.0, 0.0, 1.0);
+        if (typeof a === 'number') {
+            brush.a = a;
+            setSelectPos("alpha", (1.0 - brush.a) * 255.0);
+        }
     }
     setBlockColor();
     setSwatch();
@@ -503,4 +514,10 @@ document.onkeyup = function (e) {
     }
 }
 
-freshCanvas(256, 256)
+freshCanvas(256, 256);
+setSwatch();
+setBlockColor();
+setBlockSelectPos();
+setSelectPos("hue", brush.h);
+setSelectPos("size", brush.size);
+setSelectPos("alpha", brush.a);
