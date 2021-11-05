@@ -214,6 +214,30 @@ input['control'] = false;
 input['alt'] = false;
 input[' '] = false;
 
+var undoStack = [];
+var redoStack = [];
+
+function undoMake() {
+    undoStack.push(ctx.getImageData(0, 0, state.cW, state.cH));
+    if (redoStack.length > 0) {
+        redoStack = [];
+    }
+}
+
+function undoPop() {
+    if (undoStack.length > 0) {
+        redoStack.push(ctx.getImageData(0, 0, state.cW, state.cH));
+        ctx.putImageData(undoStack.pop(), 0, 0);
+    }
+}
+
+function redoPop() {
+    if (redoStack.length > 0) {
+        undoStack.push(ctx.getImageData(0, 0, state.cW, state.cH));
+        ctx.putImageData(redoStack.pop(), 0, 0);
+    }
+}
+
 function cursor(x) {
     html.style.cursor = x;
 }
@@ -408,6 +432,7 @@ document.onmousedown = function (e) {
         } else {
             // No modifier keys, draw
             establishBrush();
+            undoMake();
             drawPx((e.x - state.cX) / state.cZ, (e.y - state.cY) / state.cZ);
         }
     } else if (el.id == "block" || el.id == "blockSelect") {
@@ -489,7 +514,11 @@ document.onkeypress = function (e) {
 
     } else if (input['control']) {
         // Control modified shortcuts
-
+        if (input['z']) {
+            undoPop();
+        } else if (input['y']) {
+            redoPop();
+        }
 
     } else if (input['alt']) {
         // Alt modified shortcuts
