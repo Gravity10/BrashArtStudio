@@ -4,13 +4,13 @@
 }
 
 .icon {
-    content: "";
     width: 22px;
     height: 22px;
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: scroll;
     background-size: contain;
+    image-rendering: optimizeQuality;
 }
 
 .icon.brush {

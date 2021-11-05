@@ -162,7 +162,6 @@ function menuButtonHandler(parentId, x) {
 const swatch = document.getElementById("swatch");
 const block = document.getElementById("block");
 const blockSelect = document.getElementById("blockSelect");
-const hueSelect = document.getElementById("hueSelect");
 
 // Declaring widely used variables
 var prefs = { scrollDirection: -1, aa: false };

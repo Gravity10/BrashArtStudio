@@ -6,10 +6,6 @@
     margin: 0;
     padding: 0;
     color: white;
-    image-rendering: optimizeSpeed;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
     font: 14px consolas, monospace;
     line-height: 20px;
     user-select: none;
@@ -24,6 +20,13 @@
 html {
     background: #444;
     overflow: hidden;
+}
+
+canvas {
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
 }
 
 #main {
