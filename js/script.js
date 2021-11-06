@@ -165,9 +165,12 @@ const blockSelect = document.getElementById("blockSelect");
 
 // Declaring widely used variables
 var prefs = { scrollDirection: -1, aa: false };
-var state = { cX: 0, cY: 0, cW: 0, cH: 0, cZ: 1.0, curTarget: "" };
+var state = { cX: 0, cY: 0, cW: 0, cH: 0, cZ: 1.0, curTarget: "", drawing: false };
 var brush = { round: false, eraser: false, size: 1, h: 0.0, s: 0.0, b: 0.0, a: 1.0 };
 var prev = { x: 0, y: 0 };
+
+var undoStack = [];
+var undoIndex = -1;
 
 // Input collection is really nifty and works nice
 var input = {};
@@ -214,27 +217,25 @@ input['control'] = false;
 input['alt'] = false;
 input[' '] = false;
 
-var undoStack = [];
-var redoStack = [];
-
 function undoMake() {
-    undoStack.push(ctx.getImageData(0, 0, state.cW, state.cH));
-    if (redoStack.length > 0) {
-        redoStack = [];
+    undoIndex++;
+    undoStack[undoIndex] = ctx.getImageData(0, 0, state.cW, state.cH);
+    if (undoIndex + 1 < undoStack.length) {
+        undoStack.splice(undoIndex + 1);
     }
 }
 
 function undoPop() {
-    if (undoStack.length > 0) {
-        redoStack.push(ctx.getImageData(0, 0, state.cW, state.cH));
-        ctx.putImageData(undoStack.pop(), 0, 0);
+    if (undoIndex > 0) {
+        undoIndex--;
+        ctx.putImageData(undoStack[undoIndex], 0, 0);
     }
 }
 
 function redoPop() {
-    if (redoStack.length > 0) {
-        undoStack.push(ctx.getImageData(0, 0, state.cW, state.cH));
-        ctx.putImageData(redoStack.pop(), 0, 0);
+    if (undoIndex + 1 < undoStack.length) {
+        undoIndex++;
+        ctx.putImageData(undoStack[undoIndex], 0, 0);
     }
 }
 
@@ -321,10 +322,13 @@ function dropper(x, y) {
 
 // Resets all state values to defaults and passed parameters and clears/centers canvas
 function freshCanvas(w, h) {
+    undoStack = [];
+    undoIndex = -1;
     state = { cX: (window.innerWidth - w) * 0.5, cY: (window.innerHeight - h) * 0.5, cW: w, cH: h, cZ: 1.0, curTarget: "" };
     c.height = state.cH;
     c.width = state.cW;
     setCanvasPos();
+    undoMake();
 }
 
 // Pre-renders brush print for copying to canvas when drawing
@@ -432,8 +436,8 @@ document.onmousedown = function (e) {
         } else {
             // No modifier keys, draw
             establishBrush();
-            undoMake();
             drawPx((e.x - state.cX) / state.cZ, (e.y - state.cY) / state.cZ);
+            state.drawing = true;
         }
     } else if (el.id == "block" || el.id == "blockSelect") {
         state.curTarget = "block";
@@ -453,7 +457,9 @@ document.onmousedown = function (e) {
 
 // Mouse move
 document.onmousemove = function (e) {
-    if (!input['mouse']) {
+    if (state.drawing) {
+        line((prev.x - state.cX) / state.cZ, (prev.y - state.cY) / state.cZ, (e.x - state.cX) / state.cZ, (e.y - state.cY) / state.cZ);
+    } else if (!input['mouse']) {
 
     } else if (state.curTarget == "scene") {
 
@@ -465,9 +471,6 @@ document.onmousemove = function (e) {
                 setCanvasPos();
             }
 
-        } else {
-            // No modifier keys, draw
-            line((prev.x - state.cX) / state.cZ, (prev.y - state.cY) / state.cZ, (e.x - state.cX) / state.cZ, (e.y - state.cY) / state.cZ);
         }
 
     } else {
@@ -488,14 +491,18 @@ document.onmouseup = function (e) {
         input['rightClick'] = false;
     } else {
         input['mouse'] = false;
-        state.onCanvas = false;
+        if (state.drawing) {
+            undoMake();
+            state.drawing = false;
+        }
+        state.curTarget = "";
     }
 }
 
 function deselect() {
     input['rightClick'] = false;
     input['mouse'] = false;
-    state.onCanvas = false;
+    state.curTarget = "";
 }
 
 // Key down
