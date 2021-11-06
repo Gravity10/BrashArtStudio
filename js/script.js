@@ -337,24 +337,29 @@ function establishBrush() {
 }
 
 function promptCurrent() {
-    if (state.curTarget == "hue") {
-        let h = clamp(parseInt(prompt("Hue (0-360)"), 10), 0, 360);
-        if (h >= 0 && h <= 360) {
-            brush.h = h;
-            setSelectPos("hue", clamp(h / 360 * 255, 0, 255));
-        }
-    } else if (state.curTarget == "size") {
-        let s = clamp(parseInt(prompt("Brush Size (1-255)"), 10), 1, 255);
-        if (s >= 1 && s <= 255) {
-            brush.size = s;
-            setSelectPos("size", s);
-        }
-    } else if (state.curTarget == "alpha") {
-        let a = clamp(parseInt(prompt("Brush Opacity (0-255)"), 10) / 255.0, 0.0, 1.0);
-        if (a >= 0 && a <= 1) {
-            brush.a = a;
+    switch (state.curTarget) {
+        case "alpha":
+            let a = intPrompt("Brush Opacity", 0, 255) / 255;
+            brush.a = (a) ? a : brush.a;
             setSelectPos("alpha", (1.0 - a) * 255.0);
-        }
+            break;
+        case "block":
+            let s = intPrompt("Saturation", 0, 255);
+            brush.s = (s) ? s : brush.s;
+            let b = intPrompt("Brightness", 0, 255);
+            brush.b = (b) ? b : brush.b;
+            setBlockSelectPos();
+            break;
+        case "hue":
+            let h = intPrompt("Hue", 0, 360);
+            brush.h = (h) ? h : brush.h;
+            setSelectPos("hue", clamp(h / 360 * 255, 0, 255));
+            break;
+        case "size":
+            let size = intPrompt("Brush Size", 0, 255);
+            brush.size = (size) ? size : brush.size;
+            setSelectPos("size", size);
+            break;
     }
     setBlockColor();
     setSwatch();
@@ -366,7 +371,6 @@ function undoMake() {
     if (undoIndex + 1 < undoStack.length) {
         undoStack.splice(undoIndex + 1);
     }
-
 }
 
 function undoPop() {
@@ -441,20 +445,18 @@ document.onmousedown = function (e) {
             drawPx((e.x - state.cX) / state.cZ, (e.y - state.cY) / state.cZ);
             state.drawing = true;
         }
-    } else if (el.id == "block" || el.id == "blockSelect") {
-        state.curTarget = "block";
-        targetBlock(e.x, e.y);
-    } else if (el.classList.contains("slider") || el.classList.contains("select")) {
+    } else {
         state.curTarget = el.id.replace("Select", "");
         if (input['rightClick']) {
             input['mouse'] = input['rightClick'] = false;
             promptCurrent();
-            input['mouse'] = input['rightClick'] = false;
         } else {
-            targetSlider(e.x);
+            if (state.curTarget == "block") {
+                targetBlock(e.x, e.y);
+            } else {
+                targetSlider(e.x);
+            }
         }
-    } else {
-        state.curTarget = el.id;
     }
 }
 

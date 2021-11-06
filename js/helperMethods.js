@@ -44,3 +44,8 @@ function rgbToHsb(rgb) {
 
     return [(hue * 60 + 360) % 360, a / max * 100, max / 2.55];
 }
+
+function intPrompt(str, low, high) {
+    let r = clamp(parseInt(prompt(str + " (" + low + "-" + high + ")"), 10), low, high);
+    return (typeof r === "number") ? r : null;
+}
