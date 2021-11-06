@@ -217,28 +217,6 @@ input['control'] = false;
 input['alt'] = false;
 input[' '] = false;
 
-function undoMake() {
-    undoIndex++;
-    undoStack[undoIndex] = ctx.getImageData(0, 0, state.cW, state.cH);
-    if (undoIndex + 1 < undoStack.length) {
-        undoStack.splice(undoIndex + 1);
-    }
-}
-
-function undoPop() {
-    if (undoIndex > 0) {
-        undoIndex--;
-        ctx.putImageData(undoStack[undoIndex], 0, 0);
-    }
-}
-
-function redoPop() {
-    if (undoIndex + 1 < undoStack.length) {
-        undoIndex++;
-        ctx.putImageData(undoStack[undoIndex], 0, 0);
-    }
-}
-
 function cursor(x) {
     html.style.cursor = x;
 }
@@ -361,25 +339,48 @@ function establishBrush() {
 function promptCurrent() {
     if (state.curTarget == "hue") {
         let h = clamp(parseInt(prompt("Hue (0-360)"), 10), 0, 360);
-        if (typeof h === 'number') {
+        if (h >= 0 && h <= 360) {
             brush.h = h;
-            setSelectPos("hue", clamp(brush.h / 360 * 255, 0, 255));
+            setSelectPos("hue", clamp(h / 360 * 255, 0, 255));
         }
     } else if (state.curTarget == "size") {
         let s = clamp(parseInt(prompt("Brush Size (1-255)"), 10), 1, 255);
-        if (typeof s === 'number') {
-            brush.s = s;
-            setSelectPos("size", brush.size);
+        if (s >= 1 && s <= 255) {
+            brush.size = s;
+            setSelectPos("size", s);
         }
     } else if (state.curTarget == "alpha") {
         let a = clamp(parseInt(prompt("Brush Opacity (0-255)"), 10) / 255.0, 0.0, 1.0);
-        if (typeof a === 'number') {
+        if (a >= 0 && a <= 1) {
             brush.a = a;
-            setSelectPos("alpha", (1.0 - brush.a) * 255.0);
+            setSelectPos("alpha", (1.0 - a) * 255.0);
         }
     }
     setBlockColor();
     setSwatch();
+}
+
+function undoMake() {
+    undoIndex++;
+    undoStack[undoIndex] = ctx.getImageData(0, 0, state.cW, state.cH);
+    if (undoIndex + 1 < undoStack.length) {
+        undoStack.splice(undoIndex + 1);
+    }
+
+}
+
+function undoPop() {
+    if (undoIndex > 0) {
+        undoIndex--;
+        ctx.putImageData(undoStack[undoIndex], 0, 0);
+    }
+}
+
+function redoPop() {
+    if (undoIndex + 1 < undoStack.length) {
+        undoIndex++;
+        ctx.putImageData(undoStack[undoIndex], 0, 0);
+    }
 }
 
 /*
@@ -406,7 +407,8 @@ document.onwheel = function (e) {
         y: (e.y - state.cY) / state.cZ
     };
 
-    state.cZ += e.deltaY * prefs.scrollDirection * 0.001 * state.cZ;
+    state.cZ += e.deltaY * prefs.scrollDirection * 0.00075 * state.cZ;
+    state.cZ = Math.ceil(state.cZ * 100) * .01;
 
     target.x = target.x * state.cZ - e.x;
     target.y = target.y * state.cZ - e.y;
@@ -419,13 +421,13 @@ document.onwheel = function (e) {
 
 // Mouse down
 document.onmousedown = function (e) {
+    let el = e.target;
     if (e.button == 2) {
         input['rightClick'] = true;
     } else {
         input['mouse'] = true;
     }
 
-    let el = e.target;
     if (el.classList.contains('allowDraw')) {
         state.curTarget = "scene";
         if (input['rightClick']) {
@@ -445,8 +447,9 @@ document.onmousedown = function (e) {
     } else if (el.classList.contains("slider") || el.classList.contains("select")) {
         state.curTarget = el.id.replace("Select", "");
         if (input['rightClick']) {
-            deselect();
+            input['mouse'] = input['rightClick'] = false;
             promptCurrent();
+            input['mouse'] = input['rightClick'] = false;
         } else {
             targetSlider(e.x);
         }
@@ -462,7 +465,6 @@ document.onmousemove = function (e) {
     } else if (!input['mouse']) {
 
     } else if (state.curTarget == "scene") {
-
         if (input['shift'] || input['alt'] || input['control'] || input[' ']) {
 
             if (input[' ']) { // Pan canvas
@@ -470,9 +472,7 @@ document.onmousemove = function (e) {
                 state.cY += e.y - prev.y;
                 setCanvasPos();
             }
-
         }
-
     } else {
         let el = state.curTarget;
         if (el == "block") {
@@ -497,12 +497,6 @@ document.onmouseup = function (e) {
         }
         state.curTarget = "";
     }
-}
-
-function deselect() {
-    input['rightClick'] = false;
-    input['mouse'] = false;
-    state.curTarget = "";
 }
 
 // Key down
