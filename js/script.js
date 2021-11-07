@@ -166,7 +166,7 @@ const blockSelect = document.getElementById("blockSelect");
 // Declaring widely used variables
 var prefs = { scrollDirection: -1, aa: false };
 var state = { cX: 0, cY: 0, cW: 0, cH: 0, cZ: 1.0, curTarget: "", drawing: false };
-var brush = { round: false, eraser: false, size: 1, h: 0.0, s: 0.0, b: 0.0, a: 1.0 };
+var brush = { round: false, eraser: false, size: 15, h: 0.0, s: 0.0, b: 0.0, a: 1.0 };
 var prev = { x: 0, y: 0 };
 
 var undoStack = [];
@@ -223,11 +223,11 @@ function cursor(x) {
 
 // "Setters" for major elements
 function setCanvasPos() {
-    c.style.width = (state.cW * state.cZ) + "px";
-    c.style.height = (state.cH * state.cZ) + "px";
-    c.style.left = state.cX + 'px';
-    c.style.top = state.cY + 'px';
-    c.style.backgroundSize = 16.0 * state.cZ + 'px';
+    c.style.width = Math.round(state.cW * state.cZ) + "px";
+    c.style.height = Math.round(state.cH * state.cZ) + "px";
+    c.style.left = Math.round(state.cX) + 'px';
+    c.style.top = Math.round(state.cY) + 'px';
+    c.style.backgroundSize = Math.round(16.0 * state.cZ) + 'px';
 }
 
 function setSwatch() {
