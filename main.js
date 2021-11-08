@@ -9,8 +9,8 @@ function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     backgroundColor: '#444',
-    width: 1600,
-    height: 900,
+    width: Math.floor(window.outerWidth / 1.2),
+    height: Math.floor(window.outerHeight / 1.2),
     frame: false,
     webPreferences: {
       nodeIntegration: true,

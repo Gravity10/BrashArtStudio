@@ -385,9 +385,9 @@ function promptCurrent() {
             setSelectPos("alpha", (1.0 - a) * 255.0);
             break;
         case "block":
-            let s = intPrompt("Saturation", 0, 255);
+            let s = intPrompt("Saturation", 0, 100);
             brush.s = (s) ? s : brush.s;
-            let b = intPrompt("Brightness", 0, 255);
+            let b = intPrompt("Brightness", 0, 100);
             brush.b = (b) ? b : brush.b;
             setBlockSelectPos();
             break;
