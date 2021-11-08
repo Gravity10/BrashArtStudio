@@ -171,6 +171,7 @@ var prev = { x: 0, y: 0 };
 
 var undoStack = [];
 var undoIndex = -1;
+// var undoThread = new Worker('../js/undoThread.js');
 
 // Input collection is really nifty and works nice
 var input = {};
@@ -217,6 +218,42 @@ input['control'] = false;
 input['alt'] = false;
 input[' '] = false;
 
+// function undoThreadRequest(request) {
+//     switch(request) {
+//         case("make"):
+//             undoThread.postMessage();
+//             break;
+//         case("undo"):
+//             undoThread.postMessage();
+//             break;
+//         case("redo"):
+//             undoThread.postMessage();
+//             break;
+//     }
+// }
+
+function undoMake() {
+    undoIndex++;
+    undoStack[undoIndex] = ctx.getImageData(0, 0, state.cW, state.cH);
+    if (undoIndex + 1 < undoStack.length) {
+        undoStack.splice(undoIndex + 1);
+    }
+}
+
+function undoPop() {
+    if (undoIndex > 0) {
+        undoIndex--;
+        ctx.putImageData(undoStack[undoIndex], 0, 0);
+    }
+}
+
+function redoPop() {
+    if (undoIndex + 1 < undoStack.length) {
+        undoIndex++;
+        ctx.putImageData(undoStack[undoIndex], 0, 0);
+    }
+}
+
 function cursor(x) {
     html.style.cursor = x;
 }
@@ -258,12 +295,16 @@ function targetBlock(x, y) {
 
 function targetSlider(x) {
     let a = clamp(x - paletteOffset.x, 0, 255);
-    if (state.curTarget === "hue") {
-        brush.h = a / 255 * 360 % 360;
-    } else if (state.curTarget === "alpha") {
-        brush.a = clamp((255 - a) / 255, 0, 1);
-    } else if (state.curTarget === "size") {
-        brush.size = Math.max(1, a);
+    switch (state.curTarget) {
+        case ("alpha"):
+            brush.a = clamp((255 - a) / 255, 0, 1);
+            break;
+        case ("hue"):
+            brush.h = a / 255 * 360 % 360;
+            break;
+        case ("size"):
+            brush.size = Math.max(1, a);
+            break;
     }
     setSelectPos(state.curTarget, a);
     setBlockColor();
@@ -363,28 +404,6 @@ function promptCurrent() {
     }
     setBlockColor();
     setSwatch();
-}
-
-function undoMake() {
-    undoIndex++;
-    undoStack[undoIndex] = ctx.getImageData(0, 0, state.cW, state.cH);
-    if (undoIndex + 1 < undoStack.length) {
-        undoStack.splice(undoIndex + 1);
-    }
-}
-
-function undoPop() {
-    if (undoIndex > 0) {
-        undoIndex--;
-        ctx.putImageData(undoStack[undoIndex], 0, 0);
-    }
-}
-
-function redoPop() {
-    if (undoIndex + 1 < undoStack.length) {
-        undoIndex++;
-        ctx.putImageData(undoStack[undoIndex], 0, 0);
-    }
 }
 
 /*
