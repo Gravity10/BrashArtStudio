@@ -4,13 +4,15 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const ipc = ipcMain;
+const electron = require('electron');
 
 function createWindow() {
   // Create the browser window.
+  let dim = electron.screen.getPrimaryDisplay().size;
   const mainWindow = new BrowserWindow({
     backgroundColor: '#444',
-    width: Math.floor(window.outerWidth / 1.2),
-    height: Math.floor(window.outerHeight / 1.2),
+    width: Math.floor(dim.width / 1.2),
+    height: Math.floor(dim.height / 1.2),
     frame: false,
     webPreferences: {
       nodeIntegration: true,
