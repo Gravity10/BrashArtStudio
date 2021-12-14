@@ -166,7 +166,7 @@ const blockSelect = document.getElementById("blockSelect");
 // Declaring widely used variables
 var prefs = { scrollDirection: -1, aa: false };
 var state = { cX: 0, cY: 0, cW: 0, cH: 0, cZ: 1.0, curTarget: "", drawing: false };
-var brush = { round: false, eraser: false, size: 15, h: 0.0, s: 0.0, b: 0.0, a: 1.0 };
+var brush = { round: true, eraser: false, size: 15, h: 0.0, s: 0.0, b: 0.0, a: 1.0 };
 var prev = { x: 0, y: 0 };
 
 var undoStack = [];
